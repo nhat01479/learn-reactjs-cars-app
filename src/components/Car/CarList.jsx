@@ -37,7 +37,7 @@ function CarList() {
 
     return (
         <>
-            <CarCreate showModal={showModal} showModalCreate={showModalCreate} closeModal={closeModal} />
+            {/* <CarCreate showModal={showModal} showModalCreate={showModalCreate} closeModal={closeModal} /> */}
             {/* <CarDetail  showModal={showModal} showModalCreate={showModalCreate} closeModal={closeModal} /> */}
             <section>
                 <div className='container'>

@@ -10,6 +10,7 @@ function App() {
     <>
       <MainLayout>
         <Routes>
+            <Route path='/' element={<CarList />} />
             <Route path='/car/list' element={<CarList />} />
             <Route path='/car/:carId' element={<CarList />} />
       </Routes>

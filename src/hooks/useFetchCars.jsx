@@ -10,7 +10,7 @@ const useFetchCars = () => {
             setCarList(res.data)
         }
         getData()
-    }, [])
+    }, [carList])
 
     return [carList, setCarList]
 }
