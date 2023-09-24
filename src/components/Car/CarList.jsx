@@ -1,24 +1,27 @@
 import { useEffect, useState } from 'react';
-import useFetchCars from '../../hooks/useFetchCars';
-import { Link } from 'react-router-dom';
 import CarCreate from './CarCreate';
 import axios from 'axios';
-import CarDetail from './CarDetail';
 import CarService from '../../services/carService';
+import { toast } from 'react-toastify';
+import { CARS_API_URL } from '../../services/common';
 
 function CarList() {
     const [carList, setCarList] = useState([]);
-// const [carList, setCarList] = useFetchCars();
 
     useEffect(() => {
         async function getData() {
-            let res = await axios.get('https://64e707a3b0fd9648b78f379b.mockapi.io/car?search=&sortBy=id&order=desc');
+            let res = await axios.get(CARS_API_URL);
             let carListData = await res.data;
             setCarList(carListData);
-
         }
-        getData()
-    },[carList])
+        // getData()
+        const timer = setTimeout(() => {
+            getData();
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [])
+
 
 
     const [showModal, setShowModal] = useState(false);
@@ -34,17 +37,29 @@ function CarList() {
     const handleShowCarDetail = (id) => {
         setShowModal(true);
     }
+    const handleDelete = async (id) => {
+
+        let carDelete = await CarService.deleteCar(id)
+
+        if (carDelete) {
+            toast.success(`Bạn vừa thêm xoá ${carDelete?.name} khỏi BST`, {
+                autoClose: 2000
+            });
+        }
+        let newCarList = carList.filter(car => car.id !== id);
+        setCarList(newCarList);
+    }
 
     return (
         <>
-            {/* <CarCreate showModal={showModal} showModalCreate={showModalCreate} closeModal={closeModal} /> */}
+            <CarCreate carList={carList} setCarList={setCarList} showModal={showModal} showModalCreate={showModalCreate} closeModal={closeModal} />
             {/* <CarDetail  showModal={showModal} showModalCreate={showModalCreate} closeModal={closeModal} /> */}
             <section>
                 <div className='container'>
                     <div className="d-flex justify-content-between align-self-center">
                         <div>
                             <button className="btn btn-outline-primary m-3" onClick={showModalCreate}>
-                                <i className="fas fa-plus"  /> New Car
+                                <i className="fas fa-plus" /> New Car
                             </button>
                         </div>
                         <div className="m-3" style={{ height: '30px' }}>
@@ -70,9 +85,9 @@ function CarList() {
                             carList?.map((car) => (
                                 <div key={car.id} className='col-sm-3 my-3'>
                                     <div className="card" style={{ width: '18rem' }}>
-                                        <img src={car.avatar} className="card-img-top" style={{width: '286px', height: '286px'}} alt="..." />
+                                        <img src={car.avatar} className="card-img-top" style={{ width: '286px', height: '286px' }} alt="..." />
                                         <div className="card-body">
-                                            <h5 className="card-title">{car.name}</h5>
+                                            <h5 className="card-title">{car.id}. {car.name}</h5>
                                             <p>{car.description}</p>
                                         </div>
                                         <ul className="list-group list-group-flush">
@@ -82,7 +97,7 @@ function CarList() {
                                         </ul>
                                         <div className="card-body">
                                             <button type='button' onClick={() => handleShowCarDetail(car.id)} className="card-link">View Detail</button>
-                                            <button type='button' className="card-link">Delete</button>
+                                            <button type='button' className="card-link" onClick={() => handleDelete(car.id)}>Delete</button>
                                         </div>
                                     </div>
                                 </div>
