@@ -53,7 +53,7 @@ function CarList() {
 
 	const handleDelete = async (id) => {
 		let carDelete = await CarService.deleteCar(id);
-
+		console.log("carDelete", carDelete);
 		if (carDelete) {
 			toast.success(`Bạn vừa xoá ${carDelete?.name} khỏi bộ sưu tập`, {
 				autoClose: 2000,
